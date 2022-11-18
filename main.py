@@ -22,7 +22,6 @@ LISTE DES CLASSIFIEURS
 #Getting images from GTZAN
 rootPath = "C:\\archive\\Data"
 
-classes = ('blues', 'classical', 'country', 'disco',
-           'hiphop', 'jazz', 'metal', 'pop', 'reggae', 'rock')
+
 duoClasse(rootPath)
 
