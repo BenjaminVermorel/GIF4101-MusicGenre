@@ -1,6 +1,7 @@
 import os
 import collections
 import pandas as pd
+import numpy as np
 from IPython import display
 from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
@@ -10,7 +11,7 @@ from sklearn.linear_model import LogisticRegression, Perceptron
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.neural_network import MLPClassifier
 from sklearn.svm import SVC
-from sklearn.model_selection import train_test_split, RepeatedKFold
+from sklearn.model_selection import KFold
 classes = ('blues', 'classical', 'country', 'disco',
            'hiphop', 'jazz', 'metal', 'pop', 'reggae', 'rock')
 
@@ -22,6 +23,8 @@ classifiers = [
         LogisticRegression(solver = 'lbfgs', tol =1e-1, max_iter =1000),
         Perceptron(tol = 1e-2, alpha = 1e-05, max_iter =10000),
         KNeighborsClassifier(),
+        MLPClassifier(),
+        SVC(),
     ]
 
 def duoClasse(rootPath):
@@ -50,13 +53,22 @@ def train(X, y):
     scores = collections.OrderedDict()
     for clf in classifiers:
         clf_name = clf.__class__.__name__
-        clf.fit(X,y)
-        err = clf.score(X, y)
-        scores[clf_name] = err
-
+        # Validation croisée (K=3) à faire
+        rkf = KFold(n_splits=3, shuffle=True)
+        errors = []
+        for train_index, test_index in rkf.split(X):
+            # On genere les indexes d'un plis
+            X_train, X_test = X[train_index], X[test_index]
+            y_train, y_test = y[train_index], y[test_index]
+            # On entraine le pli et on calcule son erreur
+            clf.fit(X_train, y_train)
+            pred = clf.predict(X_test)
+            errorCount = sum(i != j for i, j in zip(pred, y_test))
+            err_test = errorCount / len(X_test)
+            errors.append(err_test)
+        validError = np.mean(errors)
+        scores[clf_name] = 1 - validError
     return scores
-
-
 
 def getDataByClass(data, classe):
     # remove the non-numeric columns
@@ -69,4 +81,7 @@ def getDataByClass(data, classe):
             y.append(1)
         else:
             y.append(0)
+
+    numeric_values = np.array(numeric_values)
+    y = np.array(y)
     return numeric_values, y
