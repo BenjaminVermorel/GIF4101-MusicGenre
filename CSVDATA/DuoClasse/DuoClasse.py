@@ -25,21 +25,20 @@ classes = ('blues', 'classical', 'country', 'disco',
 @ignore_warnings(category=LineSearchWarning)
 @ignore_warnings(category=UserWarning)
 def duoClasse(rootPath, usePrecalculatedParam=True):
-
     trenteSecondePath = os.path.join(rootPath, "features_30_sec.csv")
     dfTrenteSecondes = testScore(trenteSecondePath, usePrecalculatedParam)
 
     troisSecondePath = os.path.join(rootPath, "features_3_sec.csv")
     dfTroisSecondes = testScore(troisSecondePath, usePrecalculatedParam)
 
-    dfTroisSecondesGroupe = testScore(troisSecondePath, usePrecalculatedParam, groupValues = True)
-
+    dfTroisSecondesGroupe = testScore(troisSecondePath, usePrecalculatedParam, groupValues=True)
 
     print(dfTrenteSecondes.to_string())
     print(dfTroisSecondes.to_string())
     print(dfTroisSecondesGroupe.to_string())
 
-def testScore(Path, usePrecalculatedParam=True, groupValues = False):
+
+def testScore(Path, usePrecalculatedParam=True, groupValues=False):
     # comma delimited is the default
     dataSet = pd.read_csv(Path, header=0)
     original_headers = list(dataSet.columns.values)
@@ -58,7 +57,8 @@ def testScore(Path, usePrecalculatedParam=True, groupValues = False):
     df = df.sort_values(by='Moyenne', axis='index', ascending=False)
     return df
 
-def train(X, y, usePrecalculatedParam):
+
+def train(X, y, usePrecalculatedParam, groupValues=False):
     classifiers = calculateParameters(X, y, usePrecalculatedParam)
     # Dictionnaire pour enregistrer les erreurs selon les classifieurs
     scores = collections.OrderedDict()
@@ -67,21 +67,44 @@ def train(X, y, usePrecalculatedParam):
         # Validation croisée (K=3) à faire
         rkf = KFold(n_splits=3, shuffle=True)
         errors = []
-        for train_index, test_index in rkf.split(X):
-            # On genere les indexes d'un plis
-            X_train, X_test = X[train_index], X[test_index]
-            y_train, y_test = y[train_index], y[test_index]
-            # On entraine le pli et on calcule son erreur
-            clf.fit(X_train, y_train)
-            pred = clf.predict(X_test)
-            errorCount = sum(i != j for i, j in zip(pred, y_test))
-            err_test = errorCount / len(X_test)
-            errors.append(err_test)
+        if (groupValues):
+            # On gérer les données comme etant des paquets
+            # On ne peut donc pas faire de split() directement sur X
+            indexPaquets = []
+            for i in range(1000):
+                indexPaquets.append(i)
+
+            for train_index, test_index in rkf.split(indexPaquets):
+                X_train, y_train = getValueByIndexPaquets(X,y, train_index)
+                X_test, y_test = getValueByIndexPaquets(X,y, test_index)
+                # On entraine le pli et on calcule son erreur
+                clf.fit(X_train, y_train)
+                pred = clf.predict(X_test)
+                errorCount = sum(i != j for i, j in zip(pred, y_test))
+                err_test = errorCount / len(X_test)
+                errors.append(err_test)
+        else:
+            for train_index, test_index in rkf.split(X):
+                # On genere les indexes d'un plis
+                X_train, X_test = X[train_index], X[test_index]
+                y_train, y_test = y[train_index], y[test_index]
+                # On entraine le pli et on calcule son erreur
+                clf.fit(X_train, y_train)
+                pred = clf.predict(X_test)
+                errorCount = sum(i != j for i, j in zip(pred, y_test))
+                err_test = errorCount / len(X_test)
+                errors.append(err_test)
         validError = np.mean(errors)
         scores[clf_name] = 1 - validError
     return scores
 
-
+def getValueByIndexPaquets(X, y, indexes):
+    X_train, X_test = [], []
+    y_train, y_test = [], []
+    for index in indexes:
+        for i in range(10):
+            X_train.append(X[index * 10 + i])
+            y_train.append(y[index * 10 + i])
 def getDataByClass(data, classe):
     # remove the non-numeric columns
     numeric_values = data._get_numeric_data()
