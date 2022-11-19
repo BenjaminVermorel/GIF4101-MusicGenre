@@ -8,29 +8,25 @@ from sklearn.utils._testing import ignore_warnings
 from sklearn.exceptions import ConvergenceWarning
 from scipy.optimize.linesearch import LineSearchWarning
 
+from CSVDATA.DuoClasse.DuoClasse import calculateParameters
 from CSVDATA.DuoClasse.OptimParamClassifieurs import *
 from CSVDATA.DuoClasse.ScoreClassifieurs import *
-
-classes = ('blues', 'classical', 'country', 'disco',
-           'hiphop', 'jazz', 'metal', 'pop', 'reggae', 'rock')
-
 
 @ignore_warnings(category=ConvergenceWarning)
 @ignore_warnings(category=LineSearchWarning)
 @ignore_warnings(category=UserWarning)
-def duoClasse(rootPath, usePrecalculatedParam=True):
+def multiClasse(rootPath, usePrecalculatedParam=True):
 
     trenteSecondePath = os.path.join(rootPath, "features_30_sec.csv")
     dfTrenteSecondes = testScore(trenteSecondePath, usePrecalculatedParam)
 
     troisSecondePath = os.path.join(rootPath, "features_3_sec.csv")
     dfTroisSecondes = testScore(troisSecondePath, usePrecalculatedParam)
-    dfTroisSecondesGroupe = testScore(troisSecondePath, usePrecalculatedParam, groupValues=True)
+    #dfTroisSecondesGroupe = testScore(troisSecondePath, usePrecalculatedParam, groupValues=True)
 
     print(dfTrenteSecondes.to_string())
     print(dfTroisSecondes.to_string())
-    print(dfTroisSecondesGroupe.to_string())
-
+    #print(dfTroisSecondesGroupe.to_string())
 
 def testScore(Path, usePrecalculatedParam=True, groupValues=False):
     # comma delimited is the default
@@ -40,16 +36,23 @@ def testScore(Path, usePrecalculatedParam=True, groupValues=False):
     numeric_headers = list(numeric_values.columns.values)
 
     df = pd.DataFrame()
-    for element in classes:
-        print("Travail sur la classe " + element)
-        X, y = getDataByClass(dataSet, element)
-        scores = train(X, y, usePrecalculatedParam, groupValues)
-        df[element] = scores
+    X, y = getDataMultiClass(dataSet)
+    scores = train(X, y, usePrecalculatedParam, groupValues)
+    df['score'] = scores
 
-    df['Moyenne'] = df.mean(axis=1)
-    df = df.sort_values(by='Moyenne', axis='index', ascending=False)
+    df = df.sort_values(by='score', axis='index', ascending=False)
     return df
 
+def getDataMultiClass(data):
+    # remove the non-numeric columns
+    numeric_values = data._get_numeric_data()
+    y = []
+    # classes values
+    for element in data.values:
+        y.append(element[59])
+    numeric_values = np.array(numeric_values)
+    y = np.array(y)
+    return numeric_values, y
 
 def train(X, y, usePrecalculatedParam, groupValues=False):
     classifiers = calculateParameters(X, y, usePrecalculatedParam, groupValues)
@@ -86,51 +89,3 @@ def train(X, y, usePrecalculatedParam, groupValues=False):
         validScore = np.mean(scores)
         clfScores[clf_name] = validScore
     return clfScores
-
-def getDataByClass(data, classe):
-    # remove the non-numeric columns
-    numeric_values = data._get_numeric_data()
-    y = []
-    # classes values
-    for element in data.values:
-        if element[59] == classe:
-            y.append(1)
-        else:
-            y.append(0)
-    numeric_values = np.array(numeric_values)
-    y = np.array(y)
-    return numeric_values, y
-
-
-def calculateParameters(X, y, usePreCalculatedParam, groupValues = False):
-    if (usePreCalculatedParam):
-        # Ces paramètres ne sont qu'une valeur par défaut permettant de gagner
-        # sur l'execution du programme. Les résultats ne seront pas optimals.
-        LDA_solver = 'svd'
-        NC_metric = 'manhattan'
-        LR_solver, LR_max_iter = 'newton-cg', 800
-        PER_max_iter, PER_tol = 400, 5e-09
-        KNN_n_neighbors, KNN_p = 5, 2
-        MLP_hidden_layer_sizes, MLP_batch_size = 800, 200
-        SVC_C, SVC_gamma = 1e-10, 3200
-    else:
-        LDA_solver = LDAOptimalParameters(X, y, groupValues)
-        NC_metric = NearestCentroidOptimalParameters(X, y, groupValues)
-        LR_solver, LR_max_iter = LogisticRegressionOptimalParameters(X, y, groupValues)
-        PER_max_iter, PER_tol = PerceptronOptimalParameters(X, y, groupValues)
-        KNN_n_neighbors, KNN_p = KNNOptimalParameters(X, y, groupValues)
-        MLP_hidden_layer_sizes, MLP_batch_size = MLPOptimalParameters(X, y, groupValues)
-        SVC_C, SVC_gamma = SVCOptimalParameters(X, y, groupValues)
-
-    classifiers = [
-        QuadraticDiscriminantAnalysis(tol=0),
-        LinearDiscriminantAnalysis(solver=LDA_solver),
-        GaussianNB(),
-        NearestCentroid(metric=NC_metric),
-        LogisticRegression(solver=LR_solver, max_iter=LR_max_iter),
-        Perceptron(max_iter=PER_max_iter, tol=PER_tol),
-        KNeighborsClassifier(n_neighbors=KNN_n_neighbors, p=KNN_p),
-        MLPClassifier(hidden_layer_sizes=MLP_hidden_layer_sizes, batch_size=MLP_batch_size),
-        SVC(C=SVC_C, gamma=SVC_gamma),
-    ]
-    return classifiers

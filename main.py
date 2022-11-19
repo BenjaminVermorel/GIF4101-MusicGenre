@@ -4,6 +4,7 @@
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
 
 from CSVDATA.DuoClasse.DuoClasse import duoClasse
+from CSVDATA.MultiClasse.multiClasse import multiClasse
 
 """"
 LISTE DES CLASSIFIEURS
@@ -23,6 +24,11 @@ LISTE DES CLASSIFIEURS
 rootPath = "C:\\archive\\Data"
 #Variable déterminant si l'on doit calculer les valeurs optimales à utiliser pour le classifieur
 #Sinon, utilise des valeurs par défauts. Cette option est très chronophage quand mise à False.
-usePreCalculatedParams = True
+usePreCalculatedParams = False
+
+#Differents programmes du projet
+""""
 duoClasse(rootPath, usePreCalculatedParams)
+"""
+multiClasse(rootPath, usePreCalculatedParams)
 
