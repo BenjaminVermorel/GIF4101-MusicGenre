@@ -3,7 +3,7 @@
 # Press Maj+F10 to execute it or replace it with your code.
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
 
-from CSVDATA.DuoClasse.duoClasse import duoClasse
+from CSVDATA.DuoClasse.DuoClasse import duoClasse
 
 """"
 LISTE DES CLASSIFIEURS
@@ -21,7 +21,8 @@ LISTE DES CLASSIFIEURS
 
 #Getting images from GTZAN
 rootPath = "C:\\archive\\Data"
-
-
-duoClasse(rootPath)
+#Variable déterminant si l'on doit calculer les valeurs optimales à utiliser pour le classifieur
+#Sinon, utilise des valeurs par défauts. Cette option est très chronophage quand mise à False.
+usePreCalculatedParams = True
+duoClasse(rootPath, usePreCalculatedParams)
 
