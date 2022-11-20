@@ -72,7 +72,7 @@ def train(X, y, usePrecalculatedParam, groupValues=False):
                 X_test, y_test = getValueByIndexPaquets(X,y, test_index)
                 # On entraine le pli et on calcule son erreur
                 clf.fit(X_train, y_train)
-                score = clfGroupScore(clf, X_test, y_test, True)
+                score = clfScore(clf, X_test, y_test, True)
                 scores.append(score)
         else:
             for train_index, test_index in rkf.split(X):

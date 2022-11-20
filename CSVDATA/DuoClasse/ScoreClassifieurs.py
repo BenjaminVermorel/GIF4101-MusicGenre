@@ -2,21 +2,32 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 
 
-def clfGroupScore(clf, X, y, groupValues = False):
+def clfScore(clf, X, y, groupValues = False):
     if groupValues:
         # Prend 1 si la classe du groupe est bonne, 0 sinon
         paquetsCorrects = 0
         prediction = clf.predict(X)
         for groupIndex in range(int(len(X)/10)):
-            valeurCorrect = 0
+            valeurCorrect = [0,0,0,0,0,0,0,0,0,0]
             # On regarde combien d'elements dans le groupe ont la bonne prediction
             for i in range(10):
-                if prediction[groupIndex * 10 + i] == y[groupIndex * 10 + i]:
-                    valeurCorrect = valeurCorrect + 1
-            # Si la majorite des predictions dans le groupe est bonne
-            # on considere que la prediction de groupe est bonne
-            if valeurCorrect > 5:
-                paquetsCorrects = paquetsCorrects + 1
+                valeurCorrect[prediction[groupIndex * 10 + i]] = valeurCorrect[prediction[groupIndex * 10 + i]] + 1
+            classeCorrecte = y[groupIndex * 10]
+            egalite = False
+            classeIndex = -1
+            max = -1
+            for i in range(10):
+                if(valeurCorrect[i] > max):
+                    max = valeurCorrect[i]
+                    classeIndex = i
+                    egalite = False
+                if(valeurCorrect[i] == max):
+                    egalite = True
+            #Le groupe est considere comme correct si on a une majorité dans la bonne classe
+            #En cas d'egalite, la prediction n'est pas correcte
+            if(egalite == False):
+                if(classeIndex == classeCorrecte):
+                    paquetsCorrects = paquetsCorrects + 1
         score = paquetsCorrects/int(len(X)/10)
         scores = np.array(score)
         return scores.mean()

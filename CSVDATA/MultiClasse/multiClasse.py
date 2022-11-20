@@ -1,15 +1,12 @@
 import os
 import collections
 import pandas as pd
-from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
-from sklearn.naive_bayes import GaussianNB
 from sklearn.model_selection import KFold
 from sklearn.utils._testing import ignore_warnings
 from sklearn.exceptions import ConvergenceWarning
 from scipy.optimize.linesearch import LineSearchWarning
 
 from CSVDATA.DuoClasse.DuoClasse import calculateParameters
-from CSVDATA.DuoClasse.OptimParamClassifieurs import *
 from CSVDATA.DuoClasse.ScoreClassifieurs import *
 
 @ignore_warnings(category=ConvergenceWarning)
@@ -21,12 +18,12 @@ def multiClasse(rootPath, usePrecalculatedParam=True):
     dfTrenteSecondes = testScore(trenteSecondePath, usePrecalculatedParam)
 
     troisSecondePath = os.path.join(rootPath, "features_3_sec.csv")
-    dfTroisSecondes = testScore(troisSecondePath, usePrecalculatedParam)
-    #dfTroisSecondesGroupe = testScore(troisSecondePath, usePrecalculatedParam, groupValues=True)
+    #dfTroisSecondes = testScore(troisSecondePath, usePrecalculatedParam)
+    dfTroisSecondesGroupe = testScore(troisSecondePath, usePrecalculatedParam, groupValues=True)
 
-    print(dfTrenteSecondes.to_string())
-    print(dfTroisSecondes.to_string())
-    #print(dfTroisSecondesGroupe.to_string())
+    #print(dfTrenteSecondes.to_string())
+    #print(dfTroisSecondes.to_string())
+    print(dfTroisSecondesGroupe.to_string())
 
 def testScore(Path, usePrecalculatedParam=True, groupValues=False):
     # comma delimited is the default
@@ -75,7 +72,7 @@ def train(X, y, usePrecalculatedParam, groupValues=False):
                 X_test, y_test = getValueByIndexPaquets(X,y, test_index)
                 # On entraine le pli et on calcule son erreur
                 clf.fit(X_train, y_train)
-                score = clfGroupScore(clf, X_test, y_test, True)
+                score = clfScore(clf, X_test, y_test, True)
                 scores.append(score)
         else:
             for train_index, test_index in rkf.split(X):

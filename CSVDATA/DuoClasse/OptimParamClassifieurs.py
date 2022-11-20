@@ -6,7 +6,7 @@ from sklearn.neural_network import MLPClassifier
 from sklearn.svm import SVC
 import numpy as np
 
-from CSVDATA.DuoClasse.ScoreClassifieurs import clfGroupScore, getTrainTestIndexes, getValueByIndexPaquets, \
+from CSVDATA.DuoClasse.ScoreClassifieurs import clfScore, getTrainTestIndexes, getValueByIndexPaquets, \
     train_test_customSplit
 
 
@@ -22,7 +22,7 @@ def LDAOptimalParameters(X,y, groupValues = False):
         # On laisse le paramètre batch_size à sa valeur par défaut
         clf = LinearDiscriminantAnalysis(solver=hp1)
         clf.fit(X_train, y_train)
-        score = clfGroupScore(clf, X_test, y_test, groupValues)
+        score = clfScore(clf, X_test, y_test, groupValues)
         if (score > best_score):
             # On retient le meilleur choix trouvé
             best_score = score
@@ -41,7 +41,7 @@ def NearestCentroidOptimalParameters(X,y, groupValues = False):
         # On laisse le paramètre batch_size à sa valeur par défaut
         clf = NearestCentroid(metric=hp1)
         clf.fit(X_train, y_train)
-        score = clfGroupScore(clf, X_test, y_test, groupValues)
+        score = clfScore(clf, X_test, y_test, groupValues)
         if (score > best_score):
             # On retient le meilleur choix trouvé
             best_score = score
@@ -60,7 +60,7 @@ def LogisticRegressionOptimalParameters(X,y, groupValues = False):
         # On laisse le paramètre batch_size à sa valeur par défaut
         clf = LogisticRegression(solver = hp1)
         clf.fit(X_train, y_train)
-        score = clfGroupScore(clf, X_test, y_test, groupValues)
+        score = clfScore(clf, X_test, y_test, groupValues)
         if (score > best_score):
             # On retient le meilleur choix trouvé
             best_score = score
@@ -72,7 +72,7 @@ def LogisticRegressionOptimalParameters(X,y, groupValues = False):
         # On laisse le paramètre batch_size à sa valeur par défaut
         clf = LogisticRegression(max_iter=400 * hp2)
         clf.fit(X_train, y_train)
-        score = clfGroupScore(clf, X_test, y_test, groupValues)
+        score = clfScore(clf, X_test, y_test, groupValues)
         if (score > best_score):
             # On retient le meilleur choix trouvé
             best_score = score
@@ -90,7 +90,7 @@ def PerceptronOptimalParameters(X,y, groupValues = False):
         # On laisse le paramètre batch_size à sa valeur par défaut
         clf = Perceptron(max_iter = 400 * hp1)
         clf.fit(X_train, y_train)
-        score = clfGroupScore(clf, X_test, y_test, groupValues)
+        score = clfScore(clf, X_test, y_test, groupValues)
         if (score > best_score):
             # On retient le meilleur choix trouvé
             best_score = score
@@ -101,7 +101,7 @@ def PerceptronOptimalParameters(X,y, groupValues = False):
     for hp2 in [float("1e%d" % i) for i in range(-10, 6)]:
         clf = Perceptron(tol =hp2)
         clf.fit(X_train, y_train)
-        score = clfGroupScore(clf, X_test, y_test, groupValues)
+        score = clfScore(clf, X_test, y_test, groupValues)
         if (score > best_score):
             # On retient le meilleur choix trouvé
             best_score = score
@@ -119,7 +119,7 @@ def MLPOptimalParameters(X,y, groupValues = False):
         # On laisse le paramètre batch_size à sa valeur par défaut
         clf = MLPClassifier(hidden_layer_sizes=400 * hp1)
         clf.fit(X_train, y_train)
-        score = clfGroupScore(clf, X_test, y_test, groupValues)
+        score = clfScore(clf, X_test, y_test, groupValues)
         if (score > best_score):
             # On retient le meilleur choix trouvé
             best_score = score
@@ -130,7 +130,7 @@ def MLPOptimalParameters(X,y, groupValues = False):
     for hp2 in range(1, 11):
         clf = MLPClassifier(batch_size=50 * hp2)
         clf.fit(X_train, y_train)
-        score = clfGroupScore(clf, X_test, y_test, groupValues)
+        score = clfScore(clf, X_test, y_test, groupValues)
         if (score > best_score):
             # On retient le meilleur choix trouvé
             best_score = score
@@ -146,7 +146,7 @@ def KNNOptimalParameters(X,y, groupValues = False):
         # On laisse la distance p à la valeur par défaut
         clf = KNeighborsClassifier(n_neighbors=hp1)
         clf.fit(X_train, y_train)
-        score = clfGroupScore(clf, X_test, y_test, groupValues)
+        score = clfScore(clf, X_test, y_test, groupValues)
         if (score > best_score):
             # On retient le meilleur choix trouvé
             best_score = score
@@ -157,7 +157,7 @@ def KNNOptimalParameters(X,y, groupValues = False):
         # On fixe le nombre de voisins à la valeure optimale trouvée précedemment
         clf = KNeighborsClassifier(n_neighbors=KNN_n_neighbors, p=hp2)
         clf.fit(X_train, y_train)
-        score = clfGroupScore(clf, X_test, y_test, groupValues)
+        score = clfScore(clf, X_test, y_test, groupValues)
         if (score > best_score):
             # On retient le meilleur choix trouvé
             best_score = score
@@ -175,7 +175,7 @@ def SVCOptimalParameters(X,y, groupValues = False):
         # On laisse le paramètre gamma à sa valeur par défaut
         clf = SVC(C=hp1)
         clf.fit(X_train, y_train)
-        score = clfGroupScore(clf, X_test, y_test, groupValues)
+        score = clfScore(clf, X_test, y_test, groupValues)
         if (score > best_score):
             # On retient le meilleur choix trouvé
             best_score = score
@@ -191,7 +191,7 @@ def SVCOptimalParameters(X,y, groupValues = False):
         # On fixe la regularisation au parametre optimal trouvé avant
         clf = SVC(C=SVC_C, gamma = sigma * pow(2, hp2))
         clf.fit(X_train, y_train)
-        score = clfGroupScore(clf, X_test, y_test, groupValues)
+        score = clfScore(clf, X_test, y_test, groupValues)
         if (score > best_score):
             # On retient le meilleur choix trouvé
             best_score = score
