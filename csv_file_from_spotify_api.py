@@ -12,16 +12,16 @@ export SPOTIPY_REDIRECT_URI=https://localhost:8888/callback
 client_credentials_manager = SpotifyClientCredentials()
 sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
-BLUES_ID = '1h0CEZCm6IbFTbxThn6Xcs'
+BLUES_ID = '37i9dQZF1DXd9rSDyQguIk'
 CLASSICAL_ID = '1h0CEZCm6IbFTbxThn6Xcs'
-JAZZ_ID = '1h0CEZCm6IbFTbxThn6Xcs'
-METAL_ID = '1h0CEZCm6IbFTbxThn6Xcs'
-POP_ID = '1h0CEZCm6IbFTbxThn6Xcs'
-DISCO_ID = '1h0CEZCm6IbFTbxThn6Xcs'
-ROCK_ID = '1h0CEZCm6IbFTbxThn6Xcs'
-COUNTRY_ID = '1h0CEZCm6IbFTbxThn6Xcs'
-HIPHOP_ID = '1h0CEZCm6IbFTbxThn6Xcs'
-REGGAE_ID = '1h0CEZCm6IbFTbxThn6Xcs'
+JAZZ_ID = '37i9dQZF1DXbITWG1ZJKYt'
+METAL_ID = '1GXRoQWlxTNQiMNkOe7RqA'
+POP_ID = '6mtYuOxzl58vSGnEDtZ9uB'
+DISCO_ID = '2iUm4Ez2UGUpdN4KuBtAu0'
+ROCK_ID = '37i9dQZF1DWXRqgorJj26U'
+COUNTRY_ID = '37i9dQZF1DWZBCPUIUs2iR'
+HIPHOP_ID = '3RcRK9HGTAm9eLW1LepWKZ'
+REGGAE_ID = '4ONdTgODsdMvCrJ9ANld3Y'
 
 LABEL = ["blues", "classical", "rock", "metal", "pop", "disco", "jazz", "country", "hiphop", "reggae"]
 ALL_ID = [BLUES_ID, CLASSICAL_ID, ROCK_ID, METAL_ID, POP_ID, DISCO_ID, JAZZ_ID, COUNTRY_ID, HIPHOP_ID, REGGAE_ID]
@@ -32,7 +32,7 @@ with open('data_spotify.csv', 'w', newline='') as csvfile:
     fieldnames.append("genre")
     writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
     writer.writeheader()
-    for playlist_id, label in zip(ALL_ID[:1], LABEL[:1]):
+    for playlist_id, label in zip(ALL_ID, LABEL):
         results = sp.playlist(playlist_id)
         uris = [x["track"]["uri"] for x in results["tracks"]["items"][:100]]
         features = sp.audio_features(uris)
