@@ -22,6 +22,7 @@ LISTE DES CLASSIFIEURS
 
 #Getting images from GTZAN
 rootPath = "C:\\archive\\Data"
+#rootPath = "C:\\Users\\Jules\\Downloads\\Data"
 #Variable déterminant si l'on doit calculer les valeurs optimales à utiliser pour le classifieur
 #Sinon, utilise des valeurs par défauts. Cette option est très chronophage quand mise à False.
 usePreCalculatedParams = False
