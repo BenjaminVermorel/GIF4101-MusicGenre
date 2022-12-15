@@ -30,7 +30,7 @@ def getData(data):
 
     print(X)
 
-    return numeric_values, y, y_str
+    return X, y, y_str
 
 
 def extractionDataFromCSV(Path="C:\\Users\\Jules\\Downloads\\Data\\features_3_sec.csv"):
