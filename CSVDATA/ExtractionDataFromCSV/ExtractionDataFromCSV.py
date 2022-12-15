@@ -33,7 +33,7 @@ def getData(data):
     return X, y, y_str
 
 
-def extractionDataFromCSV(Path="C:\\Users\\Jules\\Downloads\\Data\\features_3_sec.csv"):
+def extractionDataFromCSV(Path="C:\\Users\\Jules\\Downloads\\Data\\features_30_sec.csv"):
     # comma delimited is the default
     dataSet = pd.read_csv(Path, header=0)
 

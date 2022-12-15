@@ -102,5 +102,5 @@ def mds_3d():
 
 if __name__ == "__main__":
     #pca_3d()
-    tsne_3d()
-    #mds_3d() # /!\ plutot long
+    #tsne_3d()
+    mds_3d() # /!\ plutot long
