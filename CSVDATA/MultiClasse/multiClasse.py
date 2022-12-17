@@ -34,6 +34,7 @@ def testScore(Path, usePrecalculatedParam=True, groupValues=False):
 
     df = pd.DataFrame()
     X, y = getDataMultiClass(dataSet)
+
     scores = train(X, y, usePrecalculatedParam, groupValues)
     df['score'] = scores
 
