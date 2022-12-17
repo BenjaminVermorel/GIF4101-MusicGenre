@@ -1,14 +1,11 @@
 import numpy
-from matplotlib import pyplot, offsetbox
+from matplotlib import pyplot
 from sklearn.decomposition import PCA
 from sklearn.manifold import MDS, TSNE
-from sklearn.datasets import load_digits
-from sklearn.preprocessing import MinMaxScaler
-from scipy.spatial.distance import cdist
 import plotly.express as px
 from plotly.offline import plot
 
-from CSVDATA.ExtractionDataFromCSV.ExtractionDataFromCSV import extractionDataFromCSV
+from CSVDATA.AnalyseDesDonnees.ExtractionDataFromCSV.ExtractionDataFromCSV import extractionDataFromCSV
 
 
 # =======================================================================
@@ -101,6 +98,6 @@ def mds_3d():
     plot(fig)
 
 if __name__ == "__main__":
-    #pca_3d()
+    pca_3d()
     #tsne_3d()
-    mds_3d() # /!\ plutot long
+    #mds_3d() # /!\ plutot long
