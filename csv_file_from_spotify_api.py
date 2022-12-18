@@ -27,7 +27,7 @@ LABEL = ["blues", "classical", "rock", "metal", "pop", "disco", "jazz", "country
 ALL_ID = [BLUES_ID, CLASSICAL_ID, ROCK_ID, METAL_ID, POP_ID, DISCO_ID, JAZZ_ID, COUNTRY_ID, HIPHOP_ID, REGGAE_ID]
 INTERESSANT_KEYS = ['danceability', 'energy', 'key', 'loudness', 'mode', 'speechiness', 'acousticness', 'instrumentalness', 'liveness', 'valence', 'tempo', 'duration_ms']
 
-with open('data_spotify.csv', 'w', newline='') as csvfile:
+with open('data/data_spotify.csv', 'w', newline='') as csvfile:
     fieldnames = INTERESSANT_KEYS.copy()
     fieldnames.append("genre")
     writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
